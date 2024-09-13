@@ -1,0 +1,48 @@
+import numpy as np
+import matplotlib.pyplot as plt
+
+def average_and_min_distance(n_points, n_dimensions):
+    # Generate random points in an n-dimensional unit cube
+    points = np.random.rand(n_points, n_dimensions)
+    
+    # Compute pairwise distances
+    distances = np.linalg.norm(points[:, np.newaxis] - points[np.newaxis, :], axis=2)
+    
+    # Flatten the distance matrix and remove zeros (distance from point to itself)
+    distances = distances[np.triu_indices(n_points, 1)]
+    
+    # Calculate average and minimum distance
+    avg_distance = np.mean(distances)
+    min_distance = np.min(distances)
+    
+    return avg_distance, min_distance
+
+def compute_and_plot(dimensions, n_points=1000):
+    avg_distances = []
+    min_distances = []
+    ratios = []
+    
+    for n in dimensions:
+        avg_distance, min_distance = average_and_min_distance(n_points, n)
+        avg_distances.append(avg_distance)
+        min_distances.append(min_distance)
+        ratios.append(avg_distance / min_distance)
+    
+    # Plotting
+    plt.figure(figsize=(12, 8))
+    
+    plt.plot(dimensions, avg_distances, marker='o', color='b', label='Average Distance')
+    plt.plot(dimensions, min_distances, marker='^', color='r', label='Minimum Distance')
+   
+    
+    plt.xlabel('Number of Dimensions')
+    plt.ylabel('Distance')
+    plt.title('Distance Metrics vs Dimensions')
+    plt.legend()
+    plt.grid(True)
+    
+    plt.show()
+
+# Define range of dimensions
+dimensions = range(2, 100)  # You can adjust the range as needed
+compute_and_plot(dimensions)
